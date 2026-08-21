@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ehbodepot.com/sitemap.xml
