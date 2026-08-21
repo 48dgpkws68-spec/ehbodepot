@@ -6,6 +6,8 @@
   var P = window.EHBO_PRODUCTS || [];
   var CATS = window.EHBO_CATS || {};
   var SHIP = window.EHBO_SHIPPING || { cost: 7.95, freeFrom: 100 };
+  var PROMO = window.EHBO_PROMO || null;
+  function saleOf(v) { return PROMO ? Math.round(v * (1 - PROMO.pct / 100) * 100) / 100 : v; }
   var ROOT = document.body.getAttribute("data-root") || "";
   var byId = {};
   P.forEach(function (p) { byId[p.id] = p; });
@@ -67,8 +69,13 @@
   function cardHTML(p) {
     var priceH, btnH;
     if (p.price != null) {
-      priceH = '<div class="price"><strong>&euro; ' + fmt(p.price) + "</strong>" +
-        '<span class="price-sub">' + T("ui.inclprefix", "incl. btw &middot;") + " &euro; " + fmt(excl(p)) + " " + T("ui.exclsuffix", "excl.") + "</span></div>";
+      var sale = saleOf(p.price);
+      var exclNow = sale / (1 + p.vat / 100);
+      var oldH = PROMO
+        ? '<span class="price-top"><span class="price-old">&euro; ' + fmt(p.price) + '</span><span class="promo-pill">-' + PROMO.pct + "%</span></span>"
+        : "";
+      priceH = '<div class="price">' + oldH + '<strong' + (PROMO ? ' class="sale"' : "") + '>&euro; ' + fmt(sale) + "</strong>" +
+        '<span class="price-sub">' + T("ui.inclprefix", "incl. btw &middot;") + " &euro; " + fmt(exclNow) + " " + T("ui.exclsuffix", "excl.") + "</span></div>";
       btnH = '<button class="btn btn-add" data-add="' + p.id + '" type="button"><svg class="icon"><use href="#ic-cart"/></svg><span>' + T("ui.addtocart", "In winkelwagen") + "</span></button>";
     } else {
       priceH = '<div class="price"><strong>' + T("ui.onrequest", "Prijs op aanvraag") + "</strong></div>";
@@ -208,7 +215,7 @@
         return;
       }
       drop.innerHTML = hits.map(function (p) {
-        var price = p.price != null ? "&euro; " + fmt(p.price) : T("ui.onrequest.short", "op aanvraag");
+        var price = p.price != null ? "&euro; " + fmt(saleOf(p.price)) : T("ui.onrequest.short", "op aanvraag");
         return '<a class="search-hit" href="' + ROOT + "product/" + p.id + '.html">' + mediaHTML(p) +
           '<span class="search-hit-name">' + esc(p.name) + '</span><span class="search-hit-price">' + price + "</span></a>";
       }).join("") +
@@ -295,18 +302,20 @@
       return;
     }
     if (emptyEl) emptyEl.hidden = true;
-    var sub = 0, vatTotal = 0;
+    var sub = 0, regSub = 0, vatTotal = 0;
     itemsEl.innerHTML = c.map(function (r) {
       var p = byId[r.id];
-      var line = p.price * r.qty;
+      var unit = saleOf(p.price);
+      var line = unit * r.qty;
       sub += line;
+      regSub += p.price * r.qty;
       vatTotal += line - line / (1 + p.vat / 100);
       return '<div class="cart-row">' +
         '<a class="cart-row-media" href="' + ROOT + "product/" + p.id + '.html">' + mediaHTML(p) + "</a>" +
-        "<div><h3>" + esc(p.name) + '</h3><span class="unit">&euro; ' + fmt(p.price) + " " + T("ui.each", "per stuk") + " &middot; " + esc(p.sub) + "</span></div>" +
+        "<div><h3>" + esc(p.name) + '</h3><span class="unit">&euro; ' + fmt(unit) + " " + T("ui.each", "per stuk") + " &middot; " + esc(p.sub) + "</span></div>" +
         '<div class="cart-row-right">' +
         '<div class="qty"><button type="button" class="qty-btn" data-qty="-1">&minus;</button><input type="number" min="1" max="999" value="' + r.qty + '" data-cart-id="' + p.id + '"><button type="button" class="qty-btn" data-qty="1">+</button></div>' +
-        '<span class="cart-row-total">&euro; ' + fmt(line) + "</span>" +
+        '<span class="cart-row-total">&euro; ' + fmt(unit * r.qty) + "</span>" +
         '<button class="cart-remove" data-remove="' + p.id + '" type="button">' + T("ui.remove", "Verwijderen") + "</button>" +
         "</div></div>";
     }).join("");
@@ -318,26 +327,34 @@
     var freeMsg = shipping === 0
       ? "&#10003; " + T("ui.freeship.done", "U heeft gratis verzending")
       : T("ui.freeship.more1", "Nog") + " <strong>&euro; " + fmt(freeLeft) + "</strong> " + T("ui.freeship.more2", "tot gratis verzending");
-    var staffelMsg = sub >= 250
+    var bigOrderMsg = sub >= 500
       ? '<div class="freeship" style="background:#fdf3dd;color:#6b4a00">' +
-        T("ui.staffel1", "Uw orderwaarde komt in aanmerking voor staffelkorting (5 tot 10%).") + " " +
-        '<a href="' + ROOT + 'offerte.html">' + T("ui.staffel2", "Vraag de korting aan via een offerte") + "</a> " +
-        T("ui.staffel3", "of vermeld “staffelkorting” bij de opmerkingen, dan verwerken wij die in de factuur.") + "</div>"
+        T("ui.bigorder1", "Grote bestelling? Voor orders vanaf € 500 maken wij graag een offerte met extra korting op maat.") + " " +
+        '<a href="' + ROOT + 'offerte.html">' + T("ui.bigorder2", "Vraag een offerte aan") + "</a></div>"
+      : "";
+    var promoLine = PROMO
+      ? '<div class="cart-line" style="color:var(--red-dark);font-weight:700"><span>' +
+        (LANG === "en" ? PROMO.label_en : PROMO.label) + " (-" + PROMO.pct + "%)</span><span>-&euro; " +
+        fmt(regSub - sub) + "</span></div>"
       : "";
     sideEl.innerHTML =
-      '<div class="cart-line"><span>' + T("ui.subtotal", "Subtotaal") + "</span><span>&euro; " + fmt(sub) + "</span></div>" +
+      '<div class="cart-line"><span>' + T("ui.subtotal", "Subtotaal") + "</span><span>&euro; " + fmt(regSub) + "</span></div>" +
+      promoLine +
       '<div class="cart-line"><span>' + T("ui.shipping", "Verzendkosten") + "</span><span>" + shipLabel + "</span></div>" +
       '<div class="freeship">' + freeMsg + '<div class="bar"><i style="width:' + progress + '%"></i></div></div>' +
-      staffelMsg +
+      bigOrderMsg +
       '<div class="cart-line total"><span>' + T("ui.total", "Totaal") + "</span><span>&euro; " + fmt(total) + "</span></div>" +
       '<div class="cart-line"><small>' + T("ui.vatincluded", "Waarvan btw") + "</small><small>&euro; " + fmt(vatTotal) + "</small></div>";
     var orderField = document.getElementById("order-field");
     if (orderField) {
       orderField.value = c.map(function (r) {
         var p = byId[r.id];
-        return r.qty + "x " + p.name + " (" + p.id + ") a EUR " + fmt(p.price) + " = EUR " + fmt(p.price * r.qty);
+        var u = saleOf(p.price);
+        return r.qty + "x " + p.name + " (" + p.id + ") a EUR " + fmt(u) + " = EUR " + fmt(u * r.qty);
       }).join("\n") +
-        "\n\nSubtotaal: EUR " + fmt(sub) +
+        (PROMO ? "\n\nSubtotaal regulier: EUR " + fmt(regSub) +
+          "\n" + PROMO.label + " (-" + PROMO.pct + "%): -EUR " + fmt(regSub - sub) : "") +
+        "\nSubtotaal: EUR " + fmt(sub) +
         "\nVerzending: " + (shipping === 0 ? "gratis" : "EUR " + fmt(shipping)) +
         "\nTotaal (incl. btw): EUR " + fmt(total);
     }
@@ -437,6 +454,6 @@
   /* ---------- pagina-specifieke init ---------- */
   applyLang();
   if (typeof window.EHBO_INIT === "function") {
-    try { window.EHBO_INIT({ products: P, cats: CATS, T: T, fmt: fmt, cardHTML: cardHTML, addToCart: addToCart, searchProducts: searchProducts, toast: toast, root: ROOT, lang: LANG }); } catch (err) { console.error(err); }
+    try { window.EHBO_INIT({ products: P, cats: CATS, T: T, fmt: fmt, cardHTML: cardHTML, addToCart: addToCart, searchProducts: searchProducts, toast: toast, root: ROOT, lang: LANG, promo: PROMO, sale: function (p) { return p.price == null ? null : saleOf(p.price); } }); } catch (err) { console.error(err); }
   }
 })();

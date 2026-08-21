@@ -19,7 +19,7 @@
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/style.css?v=7308901">
+<link rel="stylesheet" href="assets/css/style.css?v=7313415">
 
 </head>
 <body data-nav="kennisbank" data-root="" class="">
@@ -61,10 +61,11 @@
 </defs>
 </svg>
 
+<div class="promo-bar"><span data-i18n="promo.bar"><strong>Back to Work korting:</strong> 10% op het hele assortiment &middot; automatisch verrekend in de winkelwagen &middot; t/m 30 september</span></div>
 <div class="topbar">
   <div class="wrap topbar-in">
     <span class="topbar-item"><svg class="icon"><use href="#ic-truck"/></svg><span data-i18n="top.free">Gratis verzending vanaf &euro; 100</span></span>
-    <span class="topbar-item topbar-hide-s"><svg class="icon"><use href="#ic-clock"/></svg><span data-i18n="top.fast">Op werkdagen snel geleverd uit NL voorraad</span></span>
+    <span class="topbar-item topbar-hide-s"><svg class="icon"><use href="#ic-clock"/></svg><span data-i18n="top.fast">Voor 10:00 besteld, volgende werkdag in huis</span></span>
     <span class="topbar-item topbar-hide-m"><svg class="icon"><use href="#ic-invoice"/></svg><span data-i18n="top.invoice">Zakelijk bestellen op factuur</span></span>
     <span class="topbar-item topbar-hide-m"><svg class="icon"><use href="#ic-shield"/></svg><span data-i18n="top.advice">Gratis BHV-advies voor uw bedrijf</span></span>
   </div>
@@ -125,7 +126,7 @@
     <h1 data-i18n="chk.h1">De gratis EHBO-check voor uw bedrijf</h1>
     <p class="lead" data-i18n="chk.lead">Beantwoord 6 korte vragen en zie direct welke uitrusting uw werkvloer nodig heeft, met concrete producten en prijzen. Duurt 1 minuut, geen gegevens nodig.</p>
   </header>
-  <div class="tool-card" id="ehbo-tool" style="max-width:820px;margin-bottom:26px">
+  <div class="tool-card" id="ehbo-tool" style="max-width:820px;margin-bottom:26px;min-height:440px">
     <noscript><p data-i18n="chk.noscript">Voor de EHBO-check is JavaScript nodig. U kunt ook direct een <a href="offerte.html">offerte aanvragen</a>.</p></noscript>
   </div>
   <p style="max-width:820px;font-size:.82rem;color:var(--mut);margin-bottom:50px" data-i18n="chk.disclaimer">Deze check geeft een praktisch advies op basis van gangbare vuistregels rond de Arbowet en de risico-inventarisatie. Het is geen vervanging van een volledige RI&amp;E of professioneel arbo-advies.</p>
@@ -234,7 +235,10 @@ window.EHBO_INIT = function (api) {
     }
     state.step++;
     render();
-    el.scrollIntoView({ behavior: "smooth", block: "start" });
+    // alleen terugscrollen als de vraag boven het scherm is verdwenen; nooit
+    // omlaag springen na een antwoordklik
+    var top = el.getBoundingClientRect().top;
+    if (top < 0) window.scrollBy({ top: top - 90, behavior: "smooth" });
   }
 
   el.addEventListener("click", function (e) {
@@ -305,9 +309,10 @@ window.EHBO_INIT = function (api) {
   function renderResult(progressHtml) {
     var out = recommend();
     currentRec = out.rec;
+    var S = api.sale || function (p) { return p.price; };
     var total = 0;
     var rows = out.rec.map(function (r) {
-      var line = r.p.price != null ? r.p.price * r.qty : null;
+      var line = S(r.p) != null ? S(r.p) * r.qty : null;
       if (line) total += line;
       var priceTxt = line != null ? "&euro; " + api.fmt(line) : L("op aanvraag", "on request");
       return '<div class="result-block"><h3><span>' + r.qty + " × " + esc(r.p.name) +
@@ -319,10 +324,11 @@ window.EHBO_INIT = function (api) {
     var ship = total >= 100 ? L("gratis verzending", "free shipping") : L("plus € 7,95 verzending", "plus € 7.95 shipping");
     try {
       var adviesLines = out.rec.map(function (r) {
-        var line = r.p.price != null ? r.p.price * r.qty : null;
+        var line = S(r.p) != null ? S(r.p) * r.qty : null;
         return r.qty + "x " + r.p.name + " (EUR " + (line != null ? api.fmt(line) : L("op aanvraag", "on request")) + ")";
       });
       adviesLines.push(L("Totaal: EUR ", "Total: EUR ") + api.fmt(total) + L(" incl. btw", " incl. VAT"));
+      if (api.promo) adviesLines.push(L("Prijzen incl. ", "Prices incl. ") + (nl ? api.promo.label : api.promo.label_en) + " (-" + api.promo.pct + "%)");
       adviesLines.push("Op basis van de gratis EHBO-check op ehbodepot.com");
       localStorage.setItem("ehbodepot_advies", adviesLines.join("\n"));
     } catch (e) {}
@@ -349,7 +355,7 @@ window.EHBO_INIT = function (api) {
 
 <section class="pre-footer">
   <div class="wrap pre-footer-in">
-    <div class="pf-item"><svg class="icon"><use href="#ic-truck"/></svg><div><strong data-i18n="pf.1t">Snelle levering</strong><span data-i18n="pf.1s">Uit Nederlandse voorraad, gratis vanaf &euro; 100</span></div></div>
+    <div class="pf-item"><svg class="icon"><use href="#ic-truck"/></svg><div><strong data-i18n="pf.1t">Voor 10:00 besteld, morgen in huis</strong><span data-i18n="pf.1s">Levering uit Nederlandse voorraad, gratis vanaf &euro; 100</span></div></div>
     <div class="pf-item"><svg class="icon"><use href="#ic-invoice"/></svg><div><strong data-i18n="pf.2t">Zakelijk op factuur</strong><span data-i18n="pf.2s">Achteraf betalen voor bedrijven en instellingen</span></div></div>
     <div class="pf-item"><svg class="icon"><use href="#ic-refresh"/></svg><div><strong data-i18n="pf.3t">Gratis navulservice</strong><span data-i18n="pf.3s">Wij herinneren u wanneer uw koffer een navulling nodig heeft</span></div></div>
     <div class="pf-item"><svg class="icon"><use href="#ic-users"/></svg><div><strong data-i18n="pf.4t">Persoonlijk advies</strong><span data-i18n="pf.4s">Reactie op offertes en vragen binnen 1 werkdag</span></div></div>
@@ -402,8 +408,8 @@ window.EHBO_INIT = function (api) {
 
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
-<script src="assets/js/products.js?v=7308901"></script>
-<script src="assets/js/i18n-en.js?v=7308901"></script>
-<script src="assets/js/app.js?v=7308901"></script>
+<script src="assets/js/products.js?v=7313415"></script>
+<script src="assets/js/i18n-en.js?v=7313415"></script>
+<script src="assets/js/app.js?v=7313415"></script>
 </body>
 </html>
