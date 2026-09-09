@@ -19,7 +19,7 @@
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/style.css?v=8967248">
+<link rel="stylesheet" href="assets/css/style.css?v=8969002">
 
 </head>
 <body data-nav="kennisbank" data-root="" class="">
@@ -267,45 +267,45 @@ window.EHBO_INIT = function (api) {
       if (p) rec.push({ p: p, qty: qty || 1, why: why || "" });
     }
     if (a.kit === "none" || a.kit === "old") {
-      if (size === "s1") add("ehbo-verbanddoos-universeel", 1, L("De complete basis voor kleine teams", "The complete base for small teams"));
-      else if (size === "s2") add("verbandkoffer-bhv-2021", 1, L("Gevuld volgens de BHV-richtlijn", "Filled following the BHV guideline"));
-      else if (size === "s3") { add("verbandkoffer-bhv-2021", 1); add("ehbo-verbanddoos-universeel", 1, L("Tweede punt op een andere verdieping of afdeling", "Second point on another floor or department")); }
-      else if (size === "s4") add("verbandkoffer-bhv-2021", 2, L("Minimaal twee volwaardige EHBO-punten", "At least two full first aid points"));
-      else add("verbandkoffer-bhv-2021", 3, L("Meerdere EHBO-punten door het pand", "Multiple first aid points across the building"));
+      if (size === "s1") add("sanaplast-verbandtrommel-universeel-oranje-kruis-2021", 1, L("De complete basis voor kleine teams", "The complete base for small teams"));
+      else if (size === "s2") add("heka-verbanddoos-medimulti-volgens-oranje-kruis-richtlijnen-2021", 1, L("Gevuld volgens de BHV-richtlijn", "Filled following the BHV guideline"));
+      else if (size === "s3") { add("heka-verbanddoos-medimulti-volgens-oranje-kruis-richtlijnen-2021", 1); add("sanaplast-verbandtrommel-universeel-oranje-kruis-2021", 1, L("Tweede punt op een andere verdieping of afdeling", "Second point on another floor or department")); }
+      else if (size === "s4") add("heka-verbanddoos-medimulti-volgens-oranje-kruis-richtlijnen-2021", 2, L("Minimaal twee volwaardige EHBO-punten", "At least two full first aid points"));
+      else add("heka-verbanddoos-medimulti-volgens-oranje-kruis-richtlijnen-2021", 3, L("Meerdere EHBO-punten door het pand", "Multiple first aid points across the building"));
       if (a.kit === "old") notes.push(L("Uw huidige koffer is waarschijnlijk deels bruikbaar, maar verbandmiddelen verlopen. Vervangen is de veilige keuze; navullen kan via de categorie EHBO-koffer navulling.", "Your current kit may be partly usable, but dressings expire. Replacing is the safe choice; refills are available in the first aid refill category."));
     } else {
-      add("navulling-ehbo-koffer-b", 1, L("Houd de voorraad compleet met een verse navulset", "Keep stock complete with a fresh refill set"));
+      add("heka-navulling-compleet-verbanddoos-b", 1, L("Houd de voorraad compleet met een verse navulset", "Keep stock complete with a fresh refill set"));
       notes.push(L("Goed bezig. Meld uw koffer aan voor de gratis navulservice, dan blijft dit zo.", "Well done. Sign up for the free refill service to keep it that way."));
     }
     add(sector === "horeca" ? "pleisterdispenser-salvequick-haccp" : "pleisterdispenser-salvequick", 1,
       L("Pleisters direct bij de hand op de werkvloer", "Plasters within reach on the work floor"));
-    add("nitril-handschoenen-100-stuks", 1, L("Hygiënisch werken bij elke behandeling", "Hygienic treatment every time"));
-    add("bhv-hesje-bhv", size === "s1" ? 1 : big ? (size === "s3" ? 2 : 4) : 2, L("Herkenbaarheid van de bhv'er bij een incident", "Recognisable responders during an incident"));
+    add("evercare-sky-nitrile-blauw-handschoenen-onsteriel-pdv-100-stuks-medium", 1, L("Hygiënisch werken bij elke behandeling", "Hygienic treatment every time"));
+    add("rws-veiligheidsvest-geel-bhv", size === "s1" ? 1 : big ? (size === "s3" ? 2 : 4) : 2, L("Herkenbaarheid van de bhv'er bij een incident", "Recognisable responders during an incident"));
     if (a.aed !== "yes") {
       if (big) {
-        add("defisign-life-aed", 1, L("Bij een hartstilstand telt elke minuut", "Every minute counts in a cardiac arrest"));
-        add("aivia-101-aed-kast-met-alarm-en-verlichting", 1, L("Zichtbaar en beschermd opgehangen", "Visible and protected mounting"));
+        add("philips-heartstart-hs1-aed-philips-draagtas", 1, L("Bij een hartstilstand telt elke minuut", "Every minute counts in a cardiac arrest"));
+        add("aed-binnenwandkast-met-alarm-universeel", 1, L("Zichtbaar en beschermd opgehangen", "Visible and protected mounting"));
       } else {
         notes.push(L("Een eigen AED is voor uw omvang het overwegen waard, zeker als er geen AED binnen 500 meter hangt. Lees de AED koopgids voor een eerlijk advies.", "An AED is worth considering for your size, certainly if there is none within 500 metres. Read the AED buying guide for honest advice."));
       }
     }
     if (a.fire === "no") {
-      add("poederblusser-6-kg", 1, L("Allround blusser voor de meeste beginnende branden", "All-round extinguisher for most starting fires"));
-      add("blusdeken-1-2-x-1-2-m", 1, L("Eerste redmiddel bij kleine branden en vlam in de pan", "First response for small fires"));
+      add("poederblusser-1-kg-abc-staal-compact", 1, L("Allround blusser voor de meeste beginnende branden", "All-round extinguisher for most starting fires"));
+      add("blusdeken-in-platte-container-diverse-maten-1-2-x-1-2-m", 1, L("Eerste redmiddel bij kleine branden en vlam in de pan", "First response for small fires"));
     } else if (a.fire === "partial") {
-      add("blusdeken-1-2-x-1-2-m", 1, L("Aanvulling op uw bestaande blusmiddelen", "Addition to your existing equipment"));
+      add("blusdeken-in-platte-container-diverse-maten-1-2-x-1-2-m", 1, L("Aanvulling op uw bestaande blusmiddelen", "Addition to your existing equipment"));
       notes.push(L("Laat verlopen keuringen z.s.m. uitvoeren; wij leveren ook keuring en onderhoud, vraag ernaar via een offerte.", "Have expired inspections done soon; we also arrange inspection and maintenance, ask via a quote."));
     }
     if (risks.indexOf("keuken") !== -1) {
-      add("burncare-brandwondengel-spray-50-ml", 1, L("Brandwondenzorg binnen handbereik in de keuken", "Burn care within reach in the kitchen"));
-      if (sector !== "horeca") add("wondpleister-haccp-500-x-6", 1, L("Blauwe detecteerbare pleisters voor voedselzones", "Blue detectable plasters for food zones"));
+      add("burnshield-hydrogel-50-ml", 1, L("Brandwondenzorg binnen handbereik in de keuken", "Burn care within reach in the kitchen"));
+      if (sector !== "horeca") add("hekaplast-rolpleister-haccp-et-blauw-detecteerbaar-5-m-x-6-cm", 1, L("Blauwe detecteerbare pleisters voor voedselzones", "Blue detectable plasters for food zones"));
     }
-    if (risks.indexOf("chemie") !== -1) add("oogspoelstation-eye-care-twin-basic", 1, L("Oogspoeling binnen 10 seconden bereikbaar bij spatgevaar", "Eye wash reachable within 10 seconds"));
-    if (risks.indexOf("machines") !== -1) { add("traumazwachtel", 2, L("Voor ernstige bloedingen bij machinewerk", "For severe bleeding around machinery")); add("wondsnelverband-nr-2", 4, L("Snelverband voor grotere wonden", "Quick dressings for larger wounds")); }
-    if (risks.indexOf("bezoekers") !== -1) add("bord-verzamelplaats-40-x-40-aluminium", 1, L("Duidelijke verzamelplaats bij ontruiming", "Clear assembly point for evacuation"));
-    if (risks.indexOf("onderweg") !== -1) add("ehbo-tas-bhv", 1, L("Complete EHBO-tas voor bus, auto of locatiewerk", "Complete first aid bag for vehicles or site work"));
-    if (sector === "onderwijs") { add("ehbo-verbanddoos-kind", 1, L("Kindvriendelijke inhoud voor de meest voorkomende ongelukjes", "Child-friendly contents for common accidents")); add("kinderpleister-strip-1-m-x-6-cm", 2, L("Vrolijke pleisters die kinderen accepteren", "Cheerful plasters children accept")); }
-    if (sector === "bouw" || sector === "industrie") { if (risks.indexOf("chemie") === -1) add("oogspoelfles-500-ml-met-sodium-chloride-0-9", 1, L("Basis oogspoeling voor stof en vuil", "Basic eye wash for dust and dirt")); }
+    if (risks.indexOf("chemie") !== -1) add("plum-oogspoelstation-incl-2x-500-ml-2-stuks", 1, L("Oogspoeling binnen 10 seconden bereikbaar bij spatgevaar", "Eye wash reachable within 10 seconds"));
+    if (risks.indexOf("machines") !== -1) { add("hekafix-traumaverband-steriel-10-x-18-cm-per-stuk", 2, L("Voor ernstige bloedingen bij machinewerk", "For severe bleeding around machinery")); add("heka-wondsnelverband-met-hechtpleister-nr-2-steriel-6-x-8-cm-per-stuk", 4, L("Snelverband voor grotere wonden", "Quick dressings for larger wounds")); }
+    if (risks.indexOf("bezoekers") !== -1) add("verzamelpunt-pictogram-diverse-maten-haaks", 1, L("Duidelijke verzamelplaats bij ontruiming", "Clear assembly point for evacuation"));
+    if (risks.indexOf("onderweg") !== -1) add("bhv-rugzak-oranje-kruis-2021", 1, L("Complete EHBO-tas voor bus, auto of locatiewerk", "Complete first aid bag for vehicles or site work"));
+    if (sector === "onderwijs") { add("heka-verbanddoos-kinder", 1, L("Kindvriendelijke inhoud voor de meest voorkomende ongelukjes", "Child-friendly contents for common accidents")); add("protectaplast-kids-kinderpleisters-2-maten-20-stuks", 2, L("Vrolijke pleisters die kinderen accepteren", "Cheerful plasters children accept")); }
+    if (sector === "bouw" || sector === "industrie") { if (risks.indexOf("chemie") === -1) add("actiomedic-oogspoelfles-met-sodium-chloride-0-9-500-ml", 1, L("Basis oogspoeling voor stof en vuil", "Basic eye wash for dust and dirt")); }
     return { rec: rec, notes: notes };
   }
 
@@ -413,8 +413,8 @@ window.EHBO_INIT = function (api) {
 
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
-<script src="assets/js/products.js?v=8967248"></script>
-<script src="assets/js/i18n-en.js?v=8967248"></script>
-<script src="assets/js/app.js?v=8967248"></script>
+<script src="assets/js/products.js?v=8969002"></script>
+<script src="assets/js/i18n-en.js?v=8969002"></script>
+<script src="assets/js/app.js?v=8969002"></script>
 </body>
 </html>

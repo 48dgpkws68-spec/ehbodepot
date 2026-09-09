@@ -12,8 +12,15 @@
   var byId = {};
   P.forEach(function (p) { byId[p.id] = p; });
   // variantgroepen (maten/kleuren): in overzichten toont het hoofdproduct de groep
-  var variantCount = {};
-  P.forEach(function (p) { if (p.parent) variantCount[p.parent] = (variantCount[p.parent] || 0) + 1; });
+  var variantCount = {}, groupAvail = {}, fromPrice = {};
+  P.forEach(function (p) {
+    if (!p.parent) return;
+    variantCount[p.parent] = (variantCount[p.parent] || 0) + 1;
+    if (p.avail !== false && p.price != null) {
+      groupAvail[p.parent] = true;
+      if (fromPrice[p.parent] == null || p.price < fromPrice[p.parent]) fromPrice[p.parent] = p.price;
+    }
+  });
   function isLead(p) { return !p.parent || p.parent === p.id; }
   function leadOf(p) { return (p.parent && byId[p.parent]) || p; }
   var LEADS = P.filter(isLead);
@@ -75,21 +82,28 @@
   function mediaBadges(p) {
     var h = "";
     var n = variantCount[p.id] || 0;
+    var gAvail = n > 1 ? groupAvail[p.id] === true : p.avail !== false;
     if (n > 1) h += '<span class="card-badge card-badge-var">' + n + " " + T("ui.variants", "varianten") + "</span>";
-    if (p.avail === false) h += '<span class="card-badge card-badge-out">' + T("ui.soldout", "Tijdelijk uitverkocht") + "</span>";
+    if (!gAvail) h += '<span class="card-badge card-badge-out">' + T("ui.soldout", "Tijdelijk uitverkocht") + "</span>";
     return h;
   }
   function cardHTML(p) {
     var priceH, btnH;
-    if (p.price != null) {
-      var sale = saleOf(p.price);
+    var nvar = variantCount[p.id] || 0;
+    var gAvail = nvar > 1 ? groupAvail[p.id] === true : p.avail !== false;
+    var show = nvar > 1 && fromPrice[p.id] != null ? fromPrice[p.id] : p.price;
+    if (show != null) {
+      var sale = saleOf(show);
       var exclNow = sale / (1 + p.vat / 100);
       var oldH = PROMO
-        ? '<span class="price-top"><span class="price-old">&euro; ' + fmt(p.price) + '</span><span class="promo-pill">-' + PROMO.pct + "%</span></span>"
+        ? '<span class="price-top"><span class="price-old">&euro; ' + fmt(show) + '</span><span class="promo-pill">-' + PROMO.pct + "%</span></span>"
         : "";
-      priceH = '<div class="price">' + oldH + '<strong' + (PROMO ? ' class="sale"' : "") + '>&euro; ' + fmt(sale) + "</strong>" +
+      var vanaf = nvar > 1 ? '<span class="price-from">' + T("ui.from", "vanaf") + "</span> " : "";
+      priceH = '<div class="price">' + oldH + vanaf + '<strong' + (PROMO ? ' class="sale"' : "") + '>&euro; ' + fmt(sale) + "</strong>" +
         '<span class="price-sub">' + T("ui.inclprefix", "incl. btw &middot;") + " &euro; " + fmt(exclNow) + " " + T("ui.exclsuffix", "excl.") + "</span></div>";
-      btnH = p.avail === false
+      btnH = nvar > 1
+        ? '<a class="btn btn-add btn-outline" href="' + ROOT + "product/" + p.id + '.html"><span>' + T("ui.choose", "Kies uitvoering") + "</span></a>"
+        : !gAvail
         ? '<a class="btn btn-add btn-outline" href="' + ROOT + "offerte.html?product=" + p.id + '"><span>' + T("ui.soldout.cta", "Levertijd opvragen") + "</span></a>"
         : '<button class="btn btn-add" data-add="' + p.id + '" type="button"><svg class="icon"><use href="#ic-cart"/></svg><span>' + T("ui.addtocart", "In winkelwagen") + "</span></button>";
     } else {
@@ -97,10 +111,14 @@
       btnH = '<a class="btn btn-add btn-outline" href="' + ROOT + "offerte.html?product=" + p.id + '"><span>' + T("ui.requestquote", "Offerte aanvragen") + "</span></a>";
     }
     var brand = p.brand ? '<span class="card-brand">' + esc(p.brand) + "</span>" : "";
+    var cardName = p.name;
+    if (nvar > 1 && p.variant && cardName.slice(-(p.variant.length + 3)) === " - " + p.variant) {
+      cardName = cardName.slice(0, -(p.variant.length + 3));
+    }
     return '<article class="pcard" data-id="' + p.id + '">' + badgeHTML(p) +
       '<a class="pcard-media" href="' + ROOT + "product/" + p.id + '.html">' + mediaHTML(p) + mediaBadges(p) + "</a>" +
       '<div class="pcard-body">' + brand +
-      '<h3 class="pcard-title"><a href="' + ROOT + "product/" + p.id + '.html">' + esc(p.name) + "</a></h3>" +
+      '<h3 class="pcard-title"><a href="' + ROOT + "product/" + p.id + '.html">' + esc(cardName) + "</a></h3>" +
       priceH + btnH + "</div></article>";
   }
 
@@ -167,7 +185,10 @@
     t.hidden = false;
     t.classList.add("show");
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { t.classList.remove("show"); }, 3400);
+    toastTimer = setTimeout(function () {
+      t.classList.remove("show");
+      setTimeout(function () { t.hidden = true; }, 400);
+    }, 3400);
   }
   document.addEventListener("click", function (e) {
     var btn = e.target.closest && e.target.closest("[data-add]");
@@ -319,11 +340,31 @@
     var pid = rel.getAttribute("data-related");
     var cur = byId[pid];
     if (cur) {
-      var same = LEADS.filter(function (p) { return p.cat === cur.cat && p.id !== pid && p.id !== cur.parent && p.price != null && p.avail !== false; });
+      // toebehoren verkopen beter dan alternatieven: artikelen uit een ANDERE
+      // subcategorie binnen dezelfde categorie krijgen voorrang, en bij dure
+      // artikelen tonen we alleen goedkopere aanvullingen
+      var ACC = {
+        "AED apparaten": ["AED elektroden", "AED batterijen", "AED kasten & beugels", "AED tassen & koffers", "Beademingsmaskers"],
+        "EHBO-koffers": ["Navullingssets", "Losse navulartikelen per koffer"],
+        "Verbanddozen": ["Navullingssets", "Losse navulartikelen per koffer"],
+        "Pleisterdispensers": ["Navullingen pleisterdispenser"],
+        "Oogspoelstations": ["Oogspoelflessen", "Oogspoeling accessoires"],
+        "Oogspoelflessen": ["Oogspoeling accessoires", "Oogspoelstations"]
+      };
+      var wanted = ACC[cur.sub] || [];
+      var same = LEADS.filter(function (p) {
+        return p.cat === cur.cat && p.id !== pid && p.id !== cur.parent && p.price != null && p.avail !== false;
+      });
       same.sort(function (a, b) {
-        var sa = (a.sub === cur.sub ? 100 : 0) + (a.pop || 0);
-        var sb = (b.sub === cur.sub ? 100 : 0) + (b.pop || 0);
-        return sb - sa;
+        function score(x) {
+          var s = 0;
+          var i = wanted.indexOf(x.sub);
+          if (i !== -1) s += 400 - i * 10;                 // passend toebehoren eerst
+          else if (x.sub !== cur.sub) s += 60;             // dan overig aanvullend
+          if (cur.price != null && x.price > cur.price) s -= 120;  // geen duurder alternatief
+          return s + (x.pop || 0);
+        }
+        return score(b) - score(a);
       });
       rel.innerHTML = same.slice(0, 4).map(cardHTML).join("");
       if (!same.length) { var sec = rel.closest(".pd-related"); if (sec) sec.style.display = "none"; }
@@ -506,6 +547,13 @@
     }
     coType.addEventListener("change", syncCompanyRequired);
     setTimeout(syncCompanyRequired, 0); // na de taal-pass, zodat het sterretje blijft staan
+  }
+
+  /* ---------- na een geplaatste bestelling: winkelwagen legen ---------- */
+  if (/(^|\/)bedankt\.html/.test(location.pathname) &&
+      new URLSearchParams(location.search).get("type") === "bestelling") {
+    try { localStorage.removeItem("ehbodepot_cart"); } catch (e) {}
+    updateBadge();
   }
 
   /* ---------- pagina-specifieke init ---------- */
