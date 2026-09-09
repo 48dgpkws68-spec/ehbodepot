@@ -439,3 +439,29 @@ label.f-label{display:block;font-size:.84rem;font-weight:700;color:var(--ink);ma
   .hero-ctas .btn{width:100%}
   .sec{padding:46px 0}
 }
+
+/* ---- assortimentswissel sep 2026: varianten, voorraad, galerij ---- */
+.pcard-media{position:relative}
+.card-badge{position:absolute;left:10px;bottom:10px;font-size:.7rem;font-weight:700;letter-spacing:.03em;padding:4px 9px;border-radius:999px;background:#fff;border:1.5px solid var(--line);color:var(--txt);line-height:1.2}
+.card-badge-var{border-color:var(--green);color:var(--green-dark)}
+.card-badge-out{left:auto;right:10px;border-color:#e6b05c;background:#fdf3dd;color:#6b4a00}
+.pd-stock{display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:600;margin:-6px 0 14px}
+.pd-stock .dot{width:9px;height:9px;border-radius:50%;background:var(--green)}
+.pd-stock.is-out .dot{background:#d9822b}
+.pd-stock.is-out{color:#8a5200}
+.pd-features{margin:0 0 18px;font-size:.93rem}
+.pd-features li{margin-bottom:6px}
+.pd-variants{margin:0 0 18px}
+.pd-variants-label{display:block;font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin-bottom:8px}
+.pd-variants .chip{text-decoration:none;display:inline-block}
+.pd-media{flex-direction:column;gap:12px;aspect-ratio:auto;min-height:0}
+.pd-media #pd-main-img{width:100%;aspect-ratio:1/1;max-height:none;object-fit:contain}
+.pd-thumbs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.pd-thumb{width:64px;height:64px;padding:4px;border:1.5px solid var(--line);border-radius:10px;background:#fff;cursor:pointer}
+.pd-thumb img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
+.pd-thumb.is-active{border-color:var(--green)}
+.pd-thumb:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+
+.cat-search{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:14px 0 6px}
+.cat-search .head-search{max-width:420px;flex:1;min-width:240px}
+.cat-count{font-size:.9rem;color:var(--mut)}

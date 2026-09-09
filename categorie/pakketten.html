@@ -19,7 +19,7 @@
 <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
 <link rel="preload" href="../assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../assets/css/style.css?v=8177128">
+<link rel="stylesheet" href="../assets/css/style.css?v=8967248">
 
 </head>
 <body data-nav="assortiment" data-root="../" class="">
@@ -57,6 +57,9 @@
 <symbol id="ic-oefenmaterialen" viewBox="0 0 24 24"><circle cx="12" cy="6" r="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M5 21c.4-4 2.5-6.8 7-6.8s6.6 2.8 7 6.8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M9.5 16.5 12 19l2.5-2.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
 <symbol id="ic-communicatie" viewBox="0 0 24 24"><rect x="7" y="6" width="10" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M10 6V3.5M10 3.5h0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M10.5 10h3M10 17.5h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M19.5 8a5 5 0 0 1 0 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
 <symbol id="ic-overige-veiligheidsproducten" viewBox="0 0 24 24"><path d="m12 3 5 15H7z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9.3 11h5.4M3.5 20.5h17" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+<symbol id="ic-hygiene" viewBox="0 0 24 24"><path d="M9 3h6v3l1.5 1.5V9H7.5V7.5L9 6z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 9h8l-.8 11H8.8z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 3V1.5M15 4.5l3.5-1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="15" r="1.4" fill="currentColor" stroke="none"/></symbol>
+<symbol id="ic-sport" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 3.5c-2.5 2.3-3.8 5.1-3.8 8.5s1.3 6.2 3.8 8.5M12 3.5c2.5 2.3 3.8 5.1 3.8 8.5s-1.3 6.2-3.8 8.5M3.8 9.5h16.4M3.8 14.5h16.4" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
+<symbol id="ic-zelfzorg" viewBox="0 0 24 24"><path d="M12 20.5S4.5 15.4 4.5 9.9A4.2 4.2 0 0 1 12 7.2a4.2 4.2 0 0 1 7.5 2.7c0 5.5-7.5 10.6-7.5 10.6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8 12.5h2.2l1.3-2.5 1.5 4 1.2-1.5H16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
 <symbol id="ic-pakketten" viewBox="0 0 24 24"><path d="m12 3 8 4v10l-8 4-8-4V7z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M4 7.2 12 11l8-3.8M12 11v9.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="m8 5 8 3.8" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
 </defs>
 </svg>
@@ -64,7 +67,7 @@
 <div class="promo-bar"><span data-i18n="promo.bar"><strong>Back to Work korting:</strong> 10% op het hele assortiment &middot; automatisch verrekend in de winkelwagen &middot; t/m 30 september</span></div>
 <div class="topbar">
   <div class="wrap topbar-in">
-    <span class="topbar-item"><svg class="icon"><use href="#ic-truck"/></svg><span data-i18n="top.free">Gratis verzending vanaf &euro; 100</span></span>
+    <span class="topbar-item"><svg class="icon"><use href="#ic-truck"/></svg><span data-i18n="top.free">Gratis verzending vanaf &euro; 250</span></span>
     <span class="topbar-item topbar-hide-s"><svg class="icon"><use href="#ic-clock"/></svg><span data-i18n="top.fast">Voor 10:00 besteld, volgende werkdag in huis</span></span>
     <span class="topbar-item topbar-hide-m"><svg class="icon"><use href="#ic-invoice"/></svg><span data-i18n="top.invoice">Zakelijk bestellen op factuur</span></span>
     <span class="topbar-item topbar-hide-m"><svg class="icon"><use href="#ic-shield"/></svg><span data-i18n="top.advice">Gratis BHV-advies voor uw bedrijf</span></span>
@@ -135,6 +138,13 @@
       <option value="name" data-i18n="ui.sort.name">Naam A-Z</option>
     </select></label>
 </div>
+<div class="cat-search">
+  <div class="head-search">
+    <svg class="icon search-ic"><use href="#ic-search"/></svg>
+    <input id="cat-q" type="search" placeholder="Zoek binnen Voordeelpakketten..." autocomplete="off" aria-label="Zoeken binnen categorie">
+  </div>
+  <span class="cat-count"><strong id="cat-count">13</strong> <span data-i18n="ui.products">producten</span></span>
+</div>
 <div class="note" style="margin:0 0 20px" data-i18n="ui.catnote">Twijfelt u over de juiste keuze? De <a href="../ehbo-checklist.html">gratis EHBO-check</a> vertaalt uw situatie in 1 minuut naar een concreet advies, of <a href="../offerte.html">vraag een offerte</a> aan voor advies op maat.</div>
 <div class="pgrid" id="cat-grid" data-cat="pakketten">
 <article class="pcard" data-id="aed-totaalpakket-binnen">
@@ -142,7 +152,7 @@
   <div class="pcard-body">
     <span class="card-brand">EHBO Depot</span>
     <h3 class="pcard-title"><a href="../product/aed-totaalpakket-binnen.html">AED Totaalpakket Binnen</a></h3>
-    <div class="price"><span class="price-top"><span class="price-old">&euro; 2.149,00</span><span class="promo-pill">-10%</span></span><strong class="sale">&euro; 1.934,10</strong><span class="price-sub"><span data-i18n="ui.inclprefix">incl. btw &middot;</span> &euro; 1.774,40 <span data-i18n="ui.exclsuffix">excl.</span></span></div>
+    <div class="price"><span class="price-top"><span class="price-old">&euro; 1.805,99</span><span class="promo-pill">-10%</span></span><strong class="sale">&euro; 1.625,39</strong><span class="price-sub"><span data-i18n="ui.inclprefix">incl. btw &middot;</span> &euro; 1.491,18 <span data-i18n="ui.exclsuffix">excl.</span></span></div>
     <button class="btn btn-add" data-add="aed-totaalpakket-binnen" type="button"><svg class="icon"><use href="#ic-cart"/></svg><span data-i18n="ui.addtocart">In winkelwagen</span></button>
   </div>
 </article>
@@ -151,7 +161,7 @@
   <div class="pcard-body">
     <span class="card-brand">EHBO Depot</span>
     <h3 class="pcard-title"><a href="../product/bhv-startpakket-kantoor.html">BHV Startpakket Kantoor</a></h3>
-    <div class="price"><span class="price-top"><span class="price-old">&euro; 239,00</span><span class="promo-pill">-10%</span></span><strong class="sale">&euro; 215,10</strong><span class="price-sub"><span data-i18n="ui.inclprefix">incl. btw &middot;</span> &euro; 177,77 <span data-i18n="ui.exclsuffix">excl.</span></span></div>
+    <div class="price"><span class="price-top"><span class="price-old">&euro; 161,99</span><span class="promo-pill">-10%</span></span><strong class="sale">&euro; 145,79</strong><span class="price-sub"><span data-i18n="ui.inclprefix">incl. btw &middot;</span> &euro; 120,49 <span data-i18n="ui.exclsuffix">excl.</span></span></div>
     <button class="btn btn-add" data-add="bhv-startpakket-kantoor" type="button"><svg class="icon"><use href="#ic-cart"/></svg><span data-i18n="ui.addtocart">In winkelwagen</span></button>
   </div>
 </article>
@@ -160,7 +170,7 @@
   <div class="pcard-body">
     <span class="card-brand">EHBO Depot</span>
     <h3 class="pcard-title"><a href="../product/bouw-industriepakket.html">Bouw &amp; Industriepakket</a></h3>
-    <div class="price"><span class="price-top"><span class="price-old">&euro; 199,00</span><span class="promo-pill">-10%</span></span><strong class="sale">&euro; 179,10</strong><span class="price-sub"><span data-i18n="ui.inclprefix">incl. btw &middot;</span> &euro; 148,02 <span data-i18n="ui.exclsuffix">excl.</span></span></div>
+    <div class="price"><span class="price-top"><span class="price-old">&euro; 144,99</span><span class="promo-pill">-10%</span></span><strong class="sale">&euro; 130,49</strong><span class="price-sub"><span data-i18n="ui.inclprefix">incl. btw &middot;</span> &euro; 107,84 <span data-i18n="ui.exclsuffix">excl.</span></span></div>
     <button class="btn btn-add" data-add="bouw-industriepakket" type="button"><svg class="icon"><use href="#ic-cart"/></svg><span data-i18n="ui.addtocart">In winkelwagen</span></button>
   </div>
 </article>
@@ -169,7 +179,7 @@
   <div class="pcard-body">
     <span class="card-brand">EHBO Depot</span>
     <h3 class="pcard-title"><a href="../product/compleet-veiligheidspakket-mkb.html">Compleet Veiligheidspakket MKB</a></h3>
-    <div class="price"><span class="price-top"><span class="price-old">&euro; 399,00</span><span class="promo-pill">-10%</span></span><strong class="sale">&euro; 359,10</strong><span class="price-sub"><span data-i18n="ui.inclprefix">incl. btw &middot;</span> &euro; 296,78 <span data-i18n="ui.exclsuffix">excl.</span></span></div>
+    <div class="price"><span class="price-top"><span class="price-old">&euro; 238,99</span><span class="promo-pill">-10%</span></span><strong class="sale">&euro; 215,09</strong><span class="price-sub"><span data-i18n="ui.inclprefix">incl. btw &middot;</span> &euro; 177,76 <span data-i18n="ui.exclsuffix">excl.</span></span></div>
     <button class="btn btn-add" data-add="compleet-veiligheidspakket-mkb" type="button"><svg class="icon"><use href="#ic-cart"/></svg><span data-i18n="ui.addtocart">In winkelwagen</span></button>
   </div>
 </article>
@@ -178,7 +188,7 @@
   <div class="pcard-body">
     <span class="card-brand">EHBO Depot</span>
     <h3 class="pcard-title"><a href="../product/haccp-horecapakket.html">HACCP Horecapakket</a></h3>
-    <div class="price"><span class="price-top"><span class="price-old">&euro; 199,00</span><span class="promo-pill">-10%</span></span><strong class="sale">&euro; 179,10</strong><span class="price-sub"><span data-i18n="ui.inclprefix">incl. btw &middot;</span> &euro; 148,02 <span data-i18n="ui.exclsuffix">excl.</span></span></div>
+    <div class="price"><span class="price-top"><span class="price-old">&euro; 163,99</span><span class="promo-pill">-10%</span></span><strong class="sale">&euro; 147,59</strong><span class="price-sub"><span data-i18n="ui.inclprefix">incl. btw &middot;</span> &euro; 121,98 <span data-i18n="ui.exclsuffix">excl.</span></span></div>
     <button class="btn btn-add" data-add="haccp-horecapakket" type="button"><svg class="icon"><use href="#ic-cart"/></svg><span data-i18n="ui.addtocart">In winkelwagen</span></button>
   </div>
 </article>
@@ -187,7 +197,7 @@
   <div class="pcard-body">
     <span class="card-brand">EHBO Depot</span>
     <h3 class="pcard-title"><a href="../product/aed-totaalpakket-buiten.html">AED Totaalpakket Buiten</a></h3>
-    <div class="price"><span class="price-top"><span class="price-old">&euro; 2.749,00</span><span class="promo-pill">-10%</span></span><strong class="sale">&euro; 2.474,10</strong><span class="price-sub"><span data-i18n="ui.inclprefix">incl. btw &middot;</span> &euro; 2.269,82 <span data-i18n="ui.exclsuffix">excl.</span></span></div>
+    <div class="price"><span class="price-top"><span class="price-old">&euro; 2.370,99</span><span class="promo-pill">-10%</span></span><strong class="sale">&euro; 2.133,89</strong><span class="price-sub"><span data-i18n="ui.inclprefix">incl. btw &middot;</span> &euro; 1.957,70 <span data-i18n="ui.exclsuffix">excl.</span></span></div>
     <button class="btn btn-add" data-add="aed-totaalpakket-buiten" type="button"><svg class="icon"><use href="#ic-cart"/></svg><span data-i18n="ui.addtocart">In winkelwagen</span></button>
   </div>
 </article>
@@ -196,7 +206,7 @@
   <div class="pcard-body">
     <span class="card-brand">EHBO Depot</span>
     <h3 class="pcard-title"><a href="../product/brandveiligheidspakket-kantoor.html">Brandveiligheidspakket Kantoor</a></h3>
-    <div class="price"><span class="price-top"><span class="price-old">&euro; 439,00</span><span class="promo-pill">-10%</span></span><strong class="sale">&euro; 395,10</strong><span class="price-sub"><span data-i18n="ui.inclprefix">incl. btw &middot;</span> &euro; 326,53 <span data-i18n="ui.exclsuffix">excl.</span></span></div>
+    <div class="price"><span class="price-top"><span class="price-old">&euro; 224,99</span><span class="promo-pill">-10%</span></span><strong class="sale">&euro; 202,49</strong><span class="price-sub"><span data-i18n="ui.inclprefix">incl. btw &middot;</span> &euro; 167,35 <span data-i18n="ui.exclsuffix">excl.</span></span></div>
     <button class="btn btn-add" data-add="brandveiligheidspakket-kantoor" type="button"><svg class="icon"><use href="#ic-cart"/></svg><span data-i18n="ui.addtocart">In winkelwagen</span></button>
   </div>
 </article>
@@ -205,7 +215,7 @@
   <div class="pcard-body">
     <span class="card-brand">EHBO Depot</span>
     <h3 class="pcard-title"><a href="../product/school-kinderopvangpakket.html">School &amp; Kinderopvangpakket</a></h3>
-    <div class="price"><span class="price-top"><span class="price-old">&euro; 105,00</span><span class="promo-pill">-10%</span></span><strong class="sale">&euro; 94,50</strong><span class="price-sub"><span data-i18n="ui.inclprefix">incl. btw &middot;</span> &euro; 78,10 <span data-i18n="ui.exclsuffix">excl.</span></span></div>
+    <div class="price"><span class="price-top"><span class="price-old">&euro; 96,99</span><span class="promo-pill">-10%</span></span><strong class="sale">&euro; 87,29</strong><span class="price-sub"><span data-i18n="ui.inclprefix">incl. btw &middot;</span> &euro; 72,14 <span data-i18n="ui.exclsuffix">excl.</span></span></div>
     <button class="btn btn-add" data-add="school-kinderopvangpakket" type="button"><svg class="icon"><use href="#ic-cart"/></svg><span data-i18n="ui.addtocart">In winkelwagen</span></button>
   </div>
 </article>
@@ -214,7 +224,7 @@
   <div class="pcard-body">
     <span class="card-brand">EHBO Depot</span>
     <h3 class="pcard-title"><a href="../product/auto-transportpakket.html">Auto &amp; Transportpakket</a></h3>
-    <div class="price"><span class="price-top"><span class="price-old">&euro; 155,00</span><span class="promo-pill">-10%</span></span><strong class="sale">&euro; 139,50</strong><span class="price-sub"><span data-i18n="ui.inclprefix">incl. btw &middot;</span> &euro; 115,29 <span data-i18n="ui.exclsuffix">excl.</span></span></div>
+    <div class="price"><span class="price-top"><span class="price-old">&euro; 96,99</span><span class="promo-pill">-10%</span></span><strong class="sale">&euro; 87,29</strong><span class="price-sub"><span data-i18n="ui.inclprefix">incl. btw &middot;</span> &euro; 72,14 <span data-i18n="ui.exclsuffix">excl.</span></span></div>
     <button class="btn btn-add" data-add="auto-transportpakket" type="button"><svg class="icon"><use href="#ic-cart"/></svg><span data-i18n="ui.addtocart">In winkelwagen</span></button>
   </div>
 </article>
@@ -223,7 +233,7 @@
   <div class="pcard-body">
     <span class="card-brand">EHBO Depot</span>
     <h3 class="pcard-title"><a href="../product/jaarlijkse-navulset.html">Jaarlijkse Navulset</a></h3>
-    <div class="price"><span class="price-top"><span class="price-old">&euro; 119,00</span><span class="promo-pill">-10%</span></span><strong class="sale">&euro; 107,10</strong><span class="price-sub"><span data-i18n="ui.inclprefix">incl. btw &middot;</span> &euro; 88,51 <span data-i18n="ui.exclsuffix">excl.</span></span></div>
+    <div class="price"><span class="price-top"><span class="price-old">&euro; 91,99</span><span class="promo-pill">-10%</span></span><strong class="sale">&euro; 82,79</strong><span class="price-sub"><span data-i18n="ui.inclprefix">incl. btw &middot;</span> &euro; 68,42 <span data-i18n="ui.exclsuffix">excl.</span></span></div>
     <button class="btn btn-add" data-add="jaarlijkse-navulset" type="button"><svg class="icon"><use href="#ic-cart"/></svg><span data-i18n="ui.addtocart">In winkelwagen</span></button>
   </div>
 </article>
@@ -232,7 +242,7 @@
   <div class="pcard-body">
     <span class="card-brand">EHBO Depot</span>
     <h3 class="pcard-title"><a href="../product/ontruimingspakket.html">Ontruimingspakket</a></h3>
-    <div class="price"><span class="price-top"><span class="price-old">&euro; 235,00</span><span class="promo-pill">-10%</span></span><strong class="sale">&euro; 211,50</strong><span class="price-sub"><span data-i18n="ui.inclprefix">incl. btw &middot;</span> &euro; 174,79 <span data-i18n="ui.exclsuffix">excl.</span></span></div>
+    <div class="price"><span class="price-top"><span class="price-old">&euro; 103,99</span><span class="promo-pill">-10%</span></span><strong class="sale">&euro; 93,59</strong><span class="price-sub"><span data-i18n="ui.inclprefix">incl. btw &middot;</span> &euro; 77,35 <span data-i18n="ui.exclsuffix">excl.</span></span></div>
     <button class="btn btn-add" data-add="ontruimingspakket" type="button"><svg class="icon"><use href="#ic-cart"/></svg><span data-i18n="ui.addtocart">In winkelwagen</span></button>
   </div>
 </article>
@@ -241,7 +251,7 @@
   <div class="pcard-body">
     <span class="card-brand">EHBO Depot</span>
     <h3 class="pcard-title"><a href="../product/oogspoelpakket-industrie.html">Oogspoelpakket Industrie</a></h3>
-    <div class="price"><span class="price-top"><span class="price-old">&euro; 135,00</span><span class="promo-pill">-10%</span></span><strong class="sale">&euro; 121,50</strong><span class="price-sub"><span data-i18n="ui.inclprefix">incl. btw &middot;</span> &euro; 100,41 <span data-i18n="ui.exclsuffix">excl.</span></span></div>
+    <div class="price"><span class="price-top"><span class="price-old">&euro; 165,99</span><span class="promo-pill">-10%</span></span><strong class="sale">&euro; 149,39</strong><span class="price-sub"><span data-i18n="ui.inclprefix">incl. btw &middot;</span> &euro; 123,46 <span data-i18n="ui.exclsuffix">excl.</span></span></div>
     <button class="btn btn-add" data-add="oogspoelpakket-industrie" type="button"><svg class="icon"><use href="#ic-cart"/></svg><span data-i18n="ui.addtocart">In winkelwagen</span></button>
   </div>
 </article>
@@ -250,12 +260,12 @@
   <div class="pcard-body">
     <span class="card-brand">EHBO Depot</span>
     <h3 class="pcard-title"><a href="../product/zorg-praktijkpakket.html">Zorg &amp; Praktijkpakket</a></h3>
-    <div class="price"><span class="price-top"><span class="price-old">&euro; 159,00</span><span class="promo-pill">-10%</span></span><strong class="sale">&euro; 143,10</strong><span class="price-sub"><span data-i18n="ui.inclprefix">incl. btw &middot;</span> &euro; 118,26 <span data-i18n="ui.exclsuffix">excl.</span></span></div>
+    <div class="price"><span class="price-top"><span class="price-old">&euro; 120,99</span><span class="promo-pill">-10%</span></span><strong class="sale">&euro; 108,89</strong><span class="price-sub"><span data-i18n="ui.inclprefix">incl. btw &middot;</span> &euro; 89,99 <span data-i18n="ui.exclsuffix">excl.</span></span></div>
     <button class="btn btn-add" data-add="zorg-praktijkpakket" type="button"><svg class="icon"><use href="#ic-cart"/></svg><span data-i18n="ui.addtocart">In winkelwagen</span></button>
   </div>
 </article>
 </div>
-<section class="cat-seo prose"><h2>In een bestelling volledig op orde</h2><p>Een nieuw pand, een groeiend team of een BHV organisatie die vanaf nul begint: met een voordeelpakket regelt u alles in een keer. Elk pakket combineert een EHBO-koffer, BHV uitrusting en signalering die op elkaar aansluiten, samengesteld per bedrijfstype en afgestemd op de eisen uit de Arbowet. En altijd voordeliger dan wanneer u dezelfde producten los bestelt.</p><p>Kies het pakket dat bij uw situatie past. Kijk eerst naar uw branche: een keukenpakket bevat detecteerbare pleisters en een blusdeken, een kantoorpakket juist een wandkoffer en duidelijke signalering. Kijk daarna naar het aantal medewerkers en locaties; grotere organisaties bestellen per verdieping of afdeling een pakket. Op de pagina <a href="../branches.html">branches</a> ziet u per sector wat wij adviseren.</p><h2>Voordeel dat meegroeit met uw bestelling</h2><p>Pakketten zijn al scherp geprijsd. Bestelt u voor een groter bedrag, vraag dan een <a href="../offerte.html">offerte</a> aan: waar de omvang het toelaat, ontvangt u extra korting bovenop de actieprijzen. Bestellingen vanaf € 100 verzenden wij bovendien gratis. Zakelijk bestellen op factuur kan direct en zonder account; lees meer op de pagina <a href="../zakelijk.html">zakelijk</a>.</p><p>Wilt u een pakket uitbreiden of aanpassen, dan combineert u het eenvoudig met losse producten uit <a href="../categorie/ehbo.html">EHBO</a>, <a href="../categorie/bhv.html">BHV</a> of <a href="../categorie/brandpreventie.html">brandpreventie</a>. Mail ons uw situatie en u ontvangt binnen 1 werkdag een voorstel op maat.</p></section>
+<section class="cat-seo prose"><h2>In een bestelling volledig op orde</h2><p>Een nieuw pand, een groeiend team of een BHV organisatie die vanaf nul begint: met een voordeelpakket regelt u alles in een keer. Elk pakket combineert een EHBO-koffer, BHV uitrusting en signalering die op elkaar aansluiten, samengesteld per bedrijfstype en afgestemd op de eisen uit de Arbowet. En altijd voordeliger dan wanneer u dezelfde producten los bestelt.</p><p>Kies het pakket dat bij uw situatie past. Kijk eerst naar uw branche: een keukenpakket bevat detecteerbare pleisters en een blusdeken, een kantoorpakket juist een wandkoffer en duidelijke signalering. Kijk daarna naar het aantal medewerkers en locaties; grotere organisaties bestellen per verdieping of afdeling een pakket. Op de pagina <a href="../branches.html">branches</a> ziet u per sector wat wij adviseren.</p><h2>Voordeel dat meegroeit met uw bestelling</h2><p>Pakketten zijn al scherp geprijsd. Bestelt u voor een groter bedrag, vraag dan een <a href="../offerte.html">offerte</a> aan: waar de omvang het toelaat, ontvangt u extra korting bovenop de actieprijzen. Bestellingen vanaf € 250 verzenden wij bovendien gratis. Zakelijk bestellen op factuur kan direct en zonder account; lees meer op de pagina <a href="../zakelijk.html">zakelijk</a>.</p><p>Wilt u een pakket uitbreiden of aanpassen, dan combineert u het eenvoudig met losse producten uit <a href="../categorie/ehbo.html">EHBO</a>, <a href="../categorie/bhv.html">BHV</a> of <a href="../categorie/brandpreventie.html">brandpreventie</a>. Mail ons uw situatie en u ontvangt binnen 1 werkdag een voorstel op maat.</p></section>
 <div class="cta-band" style="margin:40px 0 60px">
   <div>
     <h2 data-i18n="ui.catcta.h2">Niet zeker wat uw bedrijf nodig heeft?</h2>
@@ -271,7 +281,7 @@
 
 <section class="pre-footer">
   <div class="wrap pre-footer-in">
-    <div class="pf-item"><svg class="icon"><use href="#ic-truck"/></svg><div><strong data-i18n="pf.1t">Voor 10:00 besteld, morgen in huis</strong><span data-i18n="pf.1s">Levering uit Nederlandse voorraad, gratis vanaf &euro; 100</span></div></div>
+    <div class="pf-item"><svg class="icon"><use href="#ic-truck"/></svg><div><strong data-i18n="pf.1t">Voor 10:00 besteld, morgen in huis</strong><span data-i18n="pf.1s">Levering uit Nederlandse voorraad, gratis vanaf &euro; 250</span></div></div>
     <div class="pf-item"><svg class="icon"><use href="#ic-invoice"/></svg><div><strong data-i18n="pf.2t">Zakelijk op factuur</strong><span data-i18n="pf.2s">Achteraf betalen voor bedrijven en instellingen</span></div></div>
     <div class="pf-item"><svg class="icon"><use href="#ic-refresh"/></svg><div><strong data-i18n="pf.3t">Gratis navulservice</strong><span data-i18n="pf.3s">Wij herinneren u wanneer uw koffer een navulling nodig heeft</span></div></div>
     <div class="pf-item"><svg class="icon"><use href="#ic-users"/></svg><div><strong data-i18n="pf.4t">Persoonlijk advies</strong><span data-i18n="pf.4s">Reactie op offertes en vragen binnen 1 werkdag</span></div></div>
@@ -290,10 +300,12 @@
       <h4 data-i18n="foot.assortment">Assortiment</h4>
       <a href="../categorie/ehbo.html">EHBO-koffers</a>
       <a href="../categorie/verbandmiddelen.html">Verbandmiddelen</a>
-      <a href="../categorie/aed.html">AED &amp; toebehoren</a>
+      <a href="../categorie/pleisters.html">Pleisters</a>
+      <a href="../categorie/aed.html">AED &amp; reanimatie</a>
       <a href="../categorie/bhv.html">BHV-materialen</a>
-      <a href="../categorie/brandpreventie.html">Brandpreventie</a>
+      <a href="../categorie/persoonlijke-bescherming.html">Persoonlijke bescherming</a>
       <a href="../categorie/haccp.html">HACCP &amp; horeca</a>
+      <a href="../categorie/hygiene.html">Hygi&euml;ne &amp; desinfectie</a>
       <a href="../assortiment.html" data-i18n="foot.allcats">Alle categorie&euml;n</a>
     </div>
     <div class="foot-col">
@@ -324,8 +336,8 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
-<script src="../assets/js/products.js?v=8177128"></script>
-<script src="../assets/js/i18n-en.js?v=8177128"></script>
-<script src="../assets/js/app.js?v=8177128"></script>
+<script src="../assets/js/products.js?v=8967248"></script>
+<script src="../assets/js/i18n-en.js?v=8967248"></script>
+<script src="../assets/js/app.js?v=8967248"></script>
 </body>
 </html>

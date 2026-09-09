@@ -5,12 +5,18 @@
   "use strict";
   var P = window.EHBO_PRODUCTS || [];
   var CATS = window.EHBO_CATS || {};
-  var SHIP = window.EHBO_SHIPPING || { cost: 7.95, freeFrom: 100 };
+  var SHIP = window.EHBO_SHIPPING || { cost: 7.95, freeFrom: 250 };
   var PROMO = window.EHBO_PROMO || null;
   function saleOf(v) { return PROMO ? Math.round(v * (1 - PROMO.pct / 100) * 100) / 100 : v; }
   var ROOT = document.body.getAttribute("data-root") || "";
   var byId = {};
   P.forEach(function (p) { byId[p.id] = p; });
+  // variantgroepen (maten/kleuren): in overzichten toont het hoofdproduct de groep
+  var variantCount = {};
+  P.forEach(function (p) { if (p.parent) variantCount[p.parent] = (variantCount[p.parent] || 0) + 1; });
+  function isLead(p) { return !p.parent || p.parent === p.id; }
+  function leadOf(p) { return (p.parent && byId[p.parent]) || p; }
+  var LEADS = P.filter(isLead);
 
   /* ---------- taal ---------- */
   var LANG = localStorage.getItem("ehbodepot_lang") || "nl";
@@ -66,6 +72,13 @@
     if (p.pop >= 8) return '<span class="pcard-badge">' + T("ui.badge.bestseller", "Bestseller") + "</span>";
     return "";
   }
+  function mediaBadges(p) {
+    var h = "";
+    var n = variantCount[p.id] || 0;
+    if (n > 1) h += '<span class="card-badge card-badge-var">' + n + " " + T("ui.variants", "varianten") + "</span>";
+    if (p.avail === false) h += '<span class="card-badge card-badge-out">' + T("ui.soldout", "Tijdelijk uitverkocht") + "</span>";
+    return h;
+  }
   function cardHTML(p) {
     var priceH, btnH;
     if (p.price != null) {
@@ -76,14 +89,16 @@
         : "";
       priceH = '<div class="price">' + oldH + '<strong' + (PROMO ? ' class="sale"' : "") + '>&euro; ' + fmt(sale) + "</strong>" +
         '<span class="price-sub">' + T("ui.inclprefix", "incl. btw &middot;") + " &euro; " + fmt(exclNow) + " " + T("ui.exclsuffix", "excl.") + "</span></div>";
-      btnH = '<button class="btn btn-add" data-add="' + p.id + '" type="button"><svg class="icon"><use href="#ic-cart"/></svg><span>' + T("ui.addtocart", "In winkelwagen") + "</span></button>";
+      btnH = p.avail === false
+        ? '<a class="btn btn-add btn-outline" href="' + ROOT + "offerte.html?product=" + p.id + '"><span>' + T("ui.soldout.cta", "Levertijd opvragen") + "</span></a>"
+        : '<button class="btn btn-add" data-add="' + p.id + '" type="button"><svg class="icon"><use href="#ic-cart"/></svg><span>' + T("ui.addtocart", "In winkelwagen") + "</span></button>";
     } else {
       priceH = '<div class="price"><strong>' + T("ui.onrequest", "Prijs op aanvraag") + "</strong></div>";
       btnH = '<a class="btn btn-add btn-outline" href="' + ROOT + "offerte.html?product=" + p.id + '"><span>' + T("ui.requestquote", "Offerte aanvragen") + "</span></a>";
     }
     var brand = p.brand ? '<span class="card-brand">' + esc(p.brand) + "</span>" : "";
     return '<article class="pcard" data-id="' + p.id + '">' + badgeHTML(p) +
-      '<a class="pcard-media" href="' + ROOT + "product/" + p.id + '.html">' + mediaHTML(p) + "</a>" +
+      '<a class="pcard-media" href="' + ROOT + "product/" + p.id + '.html">' + mediaHTML(p) + mediaBadges(p) + "</a>" +
       '<div class="pcard-body">' + brand +
       '<h3 class="pcard-title"><a href="' + ROOT + "product/" + p.id + '.html">' + esc(p.name) + "</a></h3>" +
       priceH + btnH + "</div></article>";
@@ -93,7 +108,7 @@
   var mega = document.getElementById("mega-cats");
   if (mega) {
     var counts = {};
-    P.forEach(function (p) { counts[p.cat] = (counts[p.cat] || 0) + 1; });
+    LEADS.forEach(function (p) { counts[p.cat] = (counts[p.cat] || 0) + 1; });
     var order = Object.keys(CATS);
     mega.innerHTML = order.map(function (slug) {
       var n = counts[slug] || 0;
@@ -161,7 +176,7 @@
     var qty = 1;
     var qi = btn.getAttribute("data-qty-input");
     if (qi) qty = Math.max(1, parseInt(document.getElementById(qi).value, 10) || 1);
-    if (!byId[id]) return;
+    if (!byId[id] || byId[id].avail === false) return;
     addToCart(id, qty);
     toast(esc(byId[id].name) + " " + T("ui.added", "toegevoegd") +
       ' &middot; <a href="' + ROOT + 'winkelwagen.html">' + T("ui.viewcart", "Bekijk winkelwagen") + "</a>");
@@ -202,7 +217,15 @@
       scored.push([score, p]);
     });
     scored.sort(function (a, b) { return b[0] - a[0]; });
-    return scored.slice(0, limit || 8).map(function (x) { return x[1]; });
+    // varianten van dezelfde groep één keer tonen (het hoofdproduct)
+    var seen = {}, out = [];
+    scored.forEach(function (x) {
+      var lead = leadOf(x[1]);
+      if (seen[lead.id]) return;
+      seen[lead.id] = true;
+      out.push(lead);
+    });
+    return out.slice(0, limit || 8);
   }
   if (input && drop) {
     input.addEventListener("input", function () {
@@ -239,11 +262,16 @@
   if (catGrid) {
     var chips = document.querySelectorAll("[data-filter-sub]");
     var sortSel = document.getElementById("sort-select");
+    var catQ = document.getElementById("cat-q");
+    var catCount = document.getElementById("cat-count");
     function applyCat() {
       var active = document.querySelector(".chip.is-active");
       var sub = active ? active.getAttribute("data-filter-sub") : "*";
+      var q = catQ ? catQ.value.toLowerCase().trim() : "";
+      var terms = q ? q.split(/\s+/) : [];
       var cards = Array.prototype.slice.call(catGrid.querySelectorAll(".pcard"));
       var mode = sortSel ? sortSel.value : "pop";
+      var shown = 0;
       cards.sort(function (a, b) {
         var pa = byId[a.getAttribute("data-id")], pb = byId[b.getAttribute("data-id")];
         if (!pa || !pb) return 0;
@@ -254,10 +282,27 @@
       });
       cards.forEach(function (el) {
         var p = byId[el.getAttribute("data-id")];
-        el.style.display = (sub === "*" || (p && p.sub === sub)) ? "" : "none";
+        var okSub = sub === "*" || (p && p.sub === sub);
+        var hay = p ? (p.name + " " + (p.brand || "") + " " + p.sub).toLowerCase() : "";
+        var okQ = !terms.length || terms.every(function (t) { return hay.indexOf(t) !== -1; });
+        var show = okSub && okQ;
+        el.style.display = show ? "" : "none";
+        if (show) shown++;
         catGrid.appendChild(el);
       });
+      if (catCount) catCount.textContent = shown;
+      var empty = document.getElementById("cat-empty");
+      if (!shown && !empty) {
+        empty = document.createElement("p");
+        empty.id = "cat-empty";
+        empty.style.cssText = "grid-column:1/-1;color:var(--mut)";
+        empty.textContent = T("ui.noresults", "Geen producten gevonden");
+        catGrid.appendChild(empty);
+      } else if (empty) {
+        empty.style.display = shown ? "none" : "";
+      }
     }
+    if (catQ) catQ.addEventListener("input", applyCat);
     chips.forEach(function (ch) {
       ch.addEventListener("click", function () {
         document.querySelectorAll(".chip").forEach(function (c) { c.classList.remove("is-active"); });
@@ -274,7 +319,7 @@
     var pid = rel.getAttribute("data-related");
     var cur = byId[pid];
     if (cur) {
-      var same = P.filter(function (p) { return p.cat === cur.cat && p.id !== pid && p.price != null; });
+      var same = LEADS.filter(function (p) { return p.cat === cur.cat && p.id !== pid && p.id !== cur.parent && p.price != null && p.avail !== false; });
       same.sort(function (a, b) {
         var sa = (a.sub === cur.sub ? 100 : 0) + (a.pop || 0);
         var sb = (b.sub === cur.sub ? 100 : 0) + (b.pop || 0);
@@ -385,7 +430,7 @@
     var qInput = document.getElementById("assort-q");
     if (qInput) qInput.value = q;
     function renderAll() {
-      var list = q.trim().length >= 2 ? searchProducts(q, 500) : P.slice().sort(function (a, b) { return (b.pop || 0) - (a.pop || 0) || a.name.localeCompare(b.name, "nl"); });
+      var list = q.trim().length >= 2 ? searchProducts(q, 500) : LEADS.slice().sort(function (a, b) { return (b.pop || 0) - (a.pop || 0) || (a.avail === false) - (b.avail === false) || a.name.localeCompare(b.name, "nl"); });
       if (activeCat !== "*") list = list.filter(function (p) { return p.cat === activeCat; });
       var cnt = document.getElementById("assort-count");
       if (cnt) cnt.textContent = list.length;
@@ -411,7 +456,7 @@
   /* ---------- home: bestsellers ---------- */
   var best = document.getElementById("best-grid");
   if (best) {
-    var picks = P.filter(function (p) { return p.price != null; })
+    var picks = LEADS.filter(function (p) { return p.price != null && p.avail !== false; })
       .sort(function (a, b) { return (b.pop || 0) - (a.pop || 0); }).slice(0, 8);
     best.innerHTML = picks.map(cardHTML).join("");
   }
@@ -419,6 +464,18 @@
   if (bundleGrid) {
     var bundles = P.filter(function (p) { return p.cat === "pakketten"; }).slice(0, 4);
     bundleGrid.innerHTML = bundles.map(cardHTML).join("");
+  }
+
+  /* ---------- productdetail: fotogalerij ---------- */
+  var mainImg = document.getElementById("pd-main-img");
+  if (mainImg) {
+    document.querySelectorAll(".pd-thumb").forEach(function (t) {
+      t.addEventListener("click", function () {
+        mainImg.src = t.getAttribute("data-full");
+        document.querySelectorAll(".pd-thumb").forEach(function (x) { x.classList.remove("is-active"); });
+        t.classList.add("is-active");
+      });
+    });
   }
 
   /* ---------- offerte: voorgeselecteerd product + checklist-advies ---------- */
