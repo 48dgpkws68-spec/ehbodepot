@@ -5,7 +5,7 @@
   "use strict";
   var P = window.EHBO_PRODUCTS || [];
   var CATS = window.EHBO_CATS || {};
-  var SHIP = window.EHBO_SHIPPING || { cost: 7.95, freeFrom: 250 };
+  var SHIP = window.EHBO_SHIPPING || { cost: 7.95, freeFrom: 250, vat: 21 };
   var PROMO = window.EHBO_PROMO || null;
   function saleOf(v) { return PROMO ? Math.round(v * (1 - PROMO.pct / 100) * 100) / 100 : v; }
   var ROOT = document.body.getAttribute("data-root") || "";
@@ -222,6 +222,33 @@
   /* ---------- zoeken ---------- */
   var input = document.getElementById("search-input");
   var drop = document.getElementById("search-drop");
+  // spreektaal en vaktermen die niet letterlijk in de productnamen staan
+  var SYN = {
+    defibrillator: "aed", defibrilator: "aed", hartstarter: "aed", reanimatieapparaat: "aed",
+    mondkapje: "mondmasker", mondkapjes: "mondmasker", gezichtsmasker: "mondmasker",
+    ehbodoos: "verbanddoos", ehbokoffer: "verbanddoos", verbandtrommel: "verbanddoos",
+    verbandkoffer: "verbanddoos", ehbokist: "verbanddoos", verbandkist: "verbanddoos",
+    pleisterautomaat: "pleisterdispenser", pleisterhouder: "pleisterdispenser",
+    oogdouche: "oogspoel", oogspoeling: "oogspoel", oogwas: "oogspoel",
+    brandblusser: "blusser", poederblusser: "blusser", blusapparaat: "blusser",
+    branddeken: "blusdeken", vlamdeken: "blusdeken",
+    zwachtel: "windsel", zwachtels: "windsel", verband: "windsel",
+    gaasje: "gaas", gaasjes: "gaas", kompres: "gaas",
+    handschoen: "handschoenen", latexhandschoenen: "nitril",
+    wegwerphandschoenen: "handschoenen", onderzoekshandschoenen: "handschoenen",
+    reanimatiepop: "reanimatiepop", oefenpop: "reanimatiepop", dummy: "reanimatiepop",
+    hesje: "veiligheidsvest", bhvhesje: "veiligheidsvest", hesjes: "veiligheidsvest",
+    oordoppen: "gehoor", oorkappen: "gehoor", gehoorbescherming: "gehoor",
+    ontsmetting: "desinfectie", ontsmettingsmiddel: "desinfectie", handgel: "desinfectie",
+    brandwond: "brandwonden", brandzalf: "brandwonden",
+    tourniquet: "tourniquet", drukverband: "snelverband",
+    veiligheidsbril: "bril", helm: "veiligheidshelm",
+    rookmelder: "rookmelder", koolmonoxidemelder: "co-melder", comelder: "co-melder"
+  };
+  function expand(t) {
+    var s = SYN[t];
+    return s && s !== t ? [t, s] : [t];
+  }
   function searchProducts(q, limit) {
     q = q.toLowerCase().trim();
     if (!q) return [];
@@ -230,7 +257,9 @@
     P.forEach(function (p) {
       var hay = (p.name + " " + (p.brand || "") + " " + p.sub + " " + catName(p.cat)).toLowerCase();
       var score = 0;
-      var ok = terms.every(function (t) { return hay.indexOf(t) !== -1; });
+      var ok = terms.every(function (t) {
+        return expand(t).some(function (x) { return hay.indexOf(x) !== -1; });
+      });
       if (!ok) return;
       if (p.name.toLowerCase().indexOf(q) === 0) score += 40;
       else if (p.name.toLowerCase().indexOf(q) !== -1) score += 20;
@@ -406,7 +435,10 @@
         "</div></div>";
     }).join("");
     var shipping = sub >= SHIP.freeFrom ? 0 : SHIP.cost;
+    // verzendkosten zijn incl. 21% btw; die btw hoort in het btw-totaal
+    if (shipping) vatTotal += shipping - shipping / (1 + (SHIP.vat || 21) / 100);
     var total = sub + shipping;
+    var totalExcl = total - vatTotal;
     var freeLeft = SHIP.freeFrom - sub;
     var shipLabel = shipping === 0 ? '<strong style="color:var(--green-dark)">' + T("ui.free", "Gratis") + "</strong>" : "&euro; " + fmt(shipping);
     var progress = Math.min(100, Math.round((sub / SHIP.freeFrom) * 100));
@@ -429,8 +461,9 @@
       '<div class="cart-line"><span>' + T("ui.shipping", "Verzendkosten") + "</span><span>" + shipLabel + "</span></div>" +
       '<div class="freeship">' + freeMsg + '<div class="bar"><i style="width:' + progress + '%"></i></div></div>' +
       bigOrderMsg +
-      '<div class="cart-line total"><span>' + T("ui.total", "Totaal") + "</span><span>&euro; " + fmt(total) + "</span></div>" +
-      '<div class="cart-line"><small>' + T("ui.vatincluded", "Waarvan btw") + "</small><small>&euro; " + fmt(vatTotal) + "</small></div>";
+      '<div class="cart-line"><span>' + T("ui.totalexcl", "Totaal excl. btw") + "</span><span>&euro; " + fmt(totalExcl) + "</span></div>" +
+      '<div class="cart-line"><small>' + T("ui.vatincluded", "Waarvan btw") + "</small><small>&euro; " + fmt(vatTotal) + "</small></div>" +
+      '<div class="cart-line total"><span>' + T("ui.total", "Totaal incl. btw") + "</span><span>&euro; " + fmt(total) + "</span></div>";
     var orderField = document.getElementById("order-field");
     if (orderField) {
       orderField.value = c.map(function (r) {
@@ -441,6 +474,7 @@
         (PROMO ? "\n\nSubtotaal regulier: EUR " + fmt(regSub) +
           "\n" + PROMO.label + " (-" + PROMO.pct + "%): -EUR " + fmt(regSub - sub) : "") +
         "\nSubtotaal: EUR " + fmt(sub) +
+        "\nTotaal excl. btw: EUR " + fmt(totalExcl) +
         "\nVerzending: " + (shipping === 0 ? "gratis" : "EUR " + fmt(shipping)) +
         "\nTotaal (incl. btw): EUR " + fmt(total);
     }
