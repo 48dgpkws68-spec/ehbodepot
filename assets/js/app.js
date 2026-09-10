@@ -255,7 +255,7 @@
     var terms = q.split(/\s+/);
     var scored = [];
     P.forEach(function (p) {
-      var hay = (p.name + " " + (p.brand || "") + " " + p.sub + " " + catName(p.cat)).toLowerCase();
+      var hay = (p.name + " " + (p.brand || "") + " " + p.sub + " " + catName(p.cat) + " " + (p.sku || "")).toLowerCase();
       var score = 0;
       var ok = terms.every(function (t) {
         return expand(t).some(function (x) { return hay.indexOf(x) !== -1; });
