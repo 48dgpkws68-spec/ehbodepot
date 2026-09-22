@@ -126,8 +126,8 @@ body[data-nav="contact"] .nav-link[data-navkey="contact"]{border-bottom-color:va
 /* ---------- knoppen ---------- */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:0;border-radius:999px;padding:12px 24px;font:inherit;font-size:.95rem;font-weight:700;cursor:pointer;transition:all .15s;text-align:center}
 .btn .icon{width:19px;height:19px}
-.btn-primary{background:var(--red);color:#fff;box-shadow:inset 0 -2px 0 rgba(0,0,0,.16)}
-.btn-primary:hover{background:var(--red-dark);color:#fff;transform:translateY(-1px)}
+.btn-primary{background:var(--red-dark);color:#fff;box-shadow:inset 0 -2px 0 rgba(0,0,0,.16)}
+.btn-primary:hover{background:#a8261d;color:#fff;transform:translateY(-1px)}
 .btn-green{background:var(--green);color:#fff;box-shadow:inset 0 -2px 0 rgba(0,0,0,.16)}
 .btn-green:hover{background:var(--green-dark);color:#fff;transform:translateY(-1px)}
 .btn-outline{background:#fff;color:var(--green-dark);border:2px solid var(--green);box-shadow:none}
@@ -494,3 +494,5 @@ label.f-label{display:block;font-size:.84rem;font-weight:700;color:var(--ink);ma
 .freeship.minorder{background:#fdecec;color:#8a1c1c;margin-top:10px}
 .btn.is-disabled{opacity:.45;pointer-events:none;cursor:not-allowed}
 #checkout-min-note{background:#fdecec;color:#8a1c1c;margin-bottom:18px}
+.f-check{display:flex;gap:10px;align-items:flex-start;font-size:.95rem;line-height:1.45;cursor:pointer}
+.f-check input{margin-top:4px;width:18px;height:18px;flex:none}

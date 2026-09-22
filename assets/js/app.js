@@ -404,7 +404,17 @@
   function renderCartPage() {
     var wrap = document.getElementById("cart-page");
     if (!wrap) return;
-    var c = getCart().filter(function (r) { return byId[r.id]; });
+    var all = getCart().filter(function (r) { return byId[r.id]; });
+    // artikelen die sinds het toevoegen niet meer leverbaar zijn, gaan eruit met een melding
+    var dropped = all.filter(function (r) { return byId[r.id].avail === false; });
+    var c = all.filter(function (r) { return byId[r.id].avail !== false; });
+    if (dropped.length) setCart(c);
+    var noticeEl = document.getElementById("cart-notice");
+    if (noticeEl) {
+      noticeEl.hidden = !dropped.length;
+      if (dropped.length) noticeEl.innerHTML = T("ui.cart.dropped", "Niet meer leverbaar en daarom uit uw winkelwagen gehaald: {names}.")
+        .replace("{names}", dropped.map(function (r) { return esc(byId[r.id].name); }).join(", "));
+    }
     var itemsEl = document.getElementById("cart-items");
     var sideEl = document.getElementById("cart-summary");
     var emptyEl = document.getElementById("cart-empty");
@@ -417,14 +427,16 @@
       return;
     }
     if (emptyEl) emptyEl.hidden = true;
-    var sub = 0, regSub = 0, vatTotal = 0;
+    var sub = 0, regSub = 0, vatTotal = 0, vat9 = 0, vat21 = 0;
     itemsEl.innerHTML = c.map(function (r) {
       var p = byId[r.id];
       var unit = saleOf(p.price);
       var line = unit * r.qty;
       sub += line;
       regSub += p.price * r.qty;
-      vatTotal += line - line / (1 + p.vat / 100);
+      var lineVat = line - line / (1 + p.vat / 100);
+      vatTotal += lineVat;
+      if (p.vat === 9) vat9 += lineVat; else vat21 += lineVat;
       return '<div class="cart-row">' +
         '<a class="cart-row-media" href="' + ROOT + "product/" + p.id + '.html">' + mediaHTML(p) + "</a>" +
         "<div><h3>" + esc(p.name) + '</h3><span class="unit">&euro; ' + fmt(unit) + " " + T("ui.each", "per stuk") + " &middot; " + esc(p.sub) + "</span></div>" +
@@ -440,7 +452,7 @@
     var belowMin = subExcl < minOrder - 0.005;
     var shipping = sub >= SHIP.freeFrom ? 0 : SHIP.cost;
     // verzendkosten zijn incl. 21% btw; die btw hoort in het btw-totaal
-    if (shipping) vatTotal += shipping - shipping / (1 + (SHIP.vat || 21) / 100);
+    if (shipping) { var shipVat = shipping - shipping / (1 + (SHIP.vat || 21) / 100); vatTotal += shipVat; vat21 += shipVat; }
     var total = sub + shipping;
     var totalExcl = total - vatTotal;
     var freeLeft = SHIP.freeFrom - sub;
@@ -479,12 +491,13 @@
       orderField.value = c.map(function (r) {
         var p = byId[r.id];
         var u = saleOf(p.price);
-        return r.qty + "x " + p.name + " (" + p.id + ") a EUR " + fmt(u) + " = EUR " + fmt(u * r.qty);
+        return r.qty + "x " + p.name + " (art.nr " + (p.sku || p.id) + ") a EUR " + fmt(u) + " = EUR " + fmt(u * r.qty);
       }).join("\n") +
         (PROMO ? "\n\nSubtotaal regulier: EUR " + fmt(regSub) +
           "\n" + PROMO.label + " (-" + PROMO.pct + "%): -EUR " + fmt(regSub - sub) : "") +
         "\nSubtotaal: EUR " + fmt(sub) +
         "\nTotaal excl. btw: EUR " + fmt(totalExcl) +
+        "\nBtw 9%: EUR " + fmt(vat9) + "\nBtw 21%: EUR " + fmt(vat21) +
         "\nVerzending: " + (shipping === 0 ? "gratis" : "EUR " + fmt(shipping)) +
         "\nTotaal (incl. btw): EUR " + fmt(total);
     }
