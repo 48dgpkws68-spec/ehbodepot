@@ -5,7 +5,7 @@
   "use strict";
   var P = window.EHBO_PRODUCTS || [];
   var CATS = window.EHBO_CATS || {};
-  var SHIP = window.EHBO_SHIPPING || { cost: 7.95, freeFrom: 250, vat: 21 };
+  var SHIP = window.EHBO_SHIPPING || { cost: 7.95, freeFrom: 250, vat: 21, minOrder: 70 };
   var PROMO = window.EHBO_PROMO || null;
   function saleOf(v) { return PROMO ? Math.round(v * (1 - PROMO.pct / 100) * 100) / 100 : v; }
   var ROOT = document.body.getAttribute("data-root") || "";
@@ -434,6 +434,10 @@
         '<button class="cart-remove" data-remove="' + p.id + '" type="button">' + T("ui.remove", "Verwijderen") + "</button>" +
         "</div></div>";
     }).join("");
+    // minimale bestelwaarde geldt op de productwaarde excl. btw (na actiekorting)
+    var subExcl = sub - vatTotal;
+    var minOrder = SHIP.minOrder || 0;
+    var belowMin = subExcl < minOrder - 0.005;
     var shipping = sub >= SHIP.freeFrom ? 0 : SHIP.cost;
     // verzendkosten zijn incl. 21% btw; die btw hoort in het btw-totaal
     if (shipping) vatTotal += shipping - shipping / (1 + (SHIP.vat || 21) / 100);
@@ -445,6 +449,11 @@
     var freeMsg = shipping === 0
       ? "&#10003; " + T("ui.freeship.done", "U heeft gratis verzending")
       : T("ui.freeship.more1", "Nog") + " <strong>&euro; " + fmt(freeLeft) + "</strong> " + T("ui.freeship.more2", "tot gratis verzending");
+    var minMsg = belowMin
+      ? '<div class="freeship minorder" role="alert">' +
+        T("ui.minorder", "Minimale bestelwaarde is &euro; {min} excl. btw. Voeg nog <strong>&euro; {left}</strong> excl. btw toe om te kunnen bestellen.")
+          .replace("{min}", fmt(minOrder)).replace("{left}", fmt(minOrder - subExcl)) + "</div>"
+      : "";
     var bigOrderMsg = sub >= 500
       ? '<div class="freeship" style="background:#fdf3dd;color:#6b4a00">' +
         T("ui.bigorder1", "Grote bestelling? Voor orders vanaf € 500 maken wij graag een offerte met extra korting op maat.") + " " +
@@ -460,6 +469,7 @@
       promoLine +
       '<div class="cart-line"><span>' + T("ui.shipping", "Verzendkosten") + "</span><span>" + shipLabel + "</span></div>" +
       '<div class="freeship">' + freeMsg + '<div class="bar"><i style="width:' + progress + '%"></i></div></div>' +
+      minMsg +
       bigOrderMsg +
       '<div class="cart-line"><span>' + T("ui.totalexcl", "Totaal excl. btw") + "</span><span>&euro; " + fmt(totalExcl) + "</span></div>" +
       '<div class="cart-line"><small>' + T("ui.vatincluded", "Waarvan btw") + "</small><small>&euro; " + fmt(vatTotal) + "</small></div>" +
@@ -480,7 +490,20 @@
     }
     var totField = document.getElementById("order-total-field");
     if (totField) totField.value = "EUR " + fmt(total);
+    // onder de minimale bestelwaarde kan er niet besteld worden
+    cartBelowMin = belowMin;
+    var toBtn = document.querySelector('.cart-side a[href="#checkout"]');
+    var submitBtn = document.querySelector("#checkout-form button[type=submit]");
+    var coNote = document.getElementById("checkout-min-note");
+    if (toBtn) { toBtn.classList.toggle("is-disabled", belowMin); toBtn.setAttribute("aria-disabled", belowMin ? "true" : "false"); }
+    if (submitBtn) submitBtn.disabled = belowMin;
+    if (coNote) coNote.hidden = !belowMin;
   }
+  var cartBelowMin = false;
+  var coForm = document.getElementById("checkout-form");
+  if (coForm) coForm.addEventListener("submit", function (e) {
+    if (cartBelowMin) { e.preventDefault(); var n = document.getElementById("checkout-min-note"); if (n) { n.hidden = false; n.scrollIntoView({ behavior: "smooth", block: "center" }); } }
+  });
   document.addEventListener("click", function (e) {
     var rm = e.target.closest && e.target.closest("[data-remove]");
     if (!rm) return;
