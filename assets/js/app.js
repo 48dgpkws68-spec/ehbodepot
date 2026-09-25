@@ -5,7 +5,7 @@
   "use strict";
   var P = window.EHBO_PRODUCTS || [];
   var CATS = window.EHBO_CATS || {};
-  var SHIP = window.EHBO_SHIPPING || { cost: 7.95, freeFrom: 250, vat: 21, minOrder: 70 };
+  var SHIP = window.EHBO_SHIPPING || { cost: 12.50, freeFrom: 250, vat: 21, minOrder: 70 };
   var PROMO = window.EHBO_PROMO || null;
   function saleOf(v) { return PROMO ? Math.round(v * (1 - PROMO.pct / 100) * 100) / 100 : v; }
   var ROOT = document.body.getAttribute("data-root") || "";
