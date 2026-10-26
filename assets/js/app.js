@@ -7,6 +7,17 @@
   var CATS = window.EHBO_CATS || {};
   var SHIP = window.EHBO_SHIPPING || { cost: 12.50, freeFrom: 250, vat: 21, minOrder: 70 };
   var PROMO = window.EHBO_PROMO || null;
+  // vangnet: na de einddatum geen korting meer tonen of verrekenen, ook als de site nog niet opnieuw gebouwd is
+  if (PROMO && PROMO.until_date && new Date().toISOString().slice(0, 10) > PROMO.until_date) {
+    PROMO = null;
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelectorAll(".promo-bar, .promo-pill, .pd-price-sub").forEach(function (el) { el.style.display = "none"; });
+      document.querySelectorAll(".pd-price").forEach(function (box) {
+        var old = box.querySelector(".price-old"), main = box.querySelector(".pd-price-main");
+        if (old && main) { main.innerHTML = old.innerHTML; main.classList.remove("sale"); old.parentNode.style.display = "none"; }
+      });
+    });
+  }
   function saleOf(v) { return PROMO ? Math.round(v * (1 - PROMO.pct / 100) * 100) / 100 : v; }
   var ROOT = document.body.getAttribute("data-root") || "";
   var byId = {};
