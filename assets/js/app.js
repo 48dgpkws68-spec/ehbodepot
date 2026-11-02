@@ -638,6 +638,24 @@
   }
 
   /* ---------- pagina-specifieke init ---------- */
+  /* ---------- meten (Umami, sinds 2 nov 2026): winkelwagen, afrekenen, bestelling, offerte ---------- */
+  function track(ev, data) { try { if (window.umami && typeof window.umami.track === "function") window.umami.track(ev, data || {}); } catch (err) {} }
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest("[data-add]");
+    if (a) { var pid = a.getAttribute("data-add"); if (byId[pid] && byId[pid].avail !== false) track("in-winkelwagen", { product: pid }); return; }
+    var l = e.target.closest && e.target.closest("a[href]");
+    if (!l) return;
+    var h = l.getAttribute("href") || "";
+    if (h === "#checkout") track("naar-afrekenen");
+    else if (/offerte\.html/.test(h)) track("offerte-klik", { van: location.pathname });
+  });
+  document.addEventListener("submit", function (e) {
+    var f = e.target;
+    if (!f || !f.id && !f.action) return;
+    if (f.id === "checkout-form") { if (!cartBelowMin) track("bestelling-verstuurd"); }
+    else if (/formsubmit\.co/.test(f.action || "")) track("formulier-verstuurd", { pagina: location.pathname });
+  });
+
   applyLang();
   if (typeof window.EHBO_INIT === "function") {
     try { window.EHBO_INIT({ products: P, cats: CATS, T: T, fmt: fmt, cardHTML: cardHTML, addToCart: addToCart, searchProducts: searchProducts, toast: toast, root: ROOT, lang: LANG, promo: PROMO, sale: function (p) { return p.price == null ? null : saleOf(p.price); } }); } catch (err) { console.error(err); }
